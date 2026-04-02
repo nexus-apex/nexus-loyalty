@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Pointtransactions | NexusLoyalty{% endblock %}
+{% block page_title %}Pointtransactions{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search pointtransactions...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Transaction Type</option>
+      <option value="earned" {% if status_filter == 'earned' %}selected{% endif %}>Earned</option>
+      <option value="redeemed" {% if status_filter == 'redeemed' %}selected{% endif %}>Redeemed</option>
+      <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>Expired</option>
+      <option value="bonus" {% if status_filter == 'bonus' %}selected{% endif %}>Bonus</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/pointtransactions/create/" class="btn btn-primary">+ New PointTransaction</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Customer Name</th><th>Points</th><th>Transaction Type</th><th>Reference</th><th>Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/pointtransactions/{{ r.pk }}/edit/"><strong>{{ r.customer_name }}</strong></a></td>
+        <td>{{ r.points|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_transaction_type_display }}</span></td>
+        <td>{{ r.reference|default:"-" }}</td>
+        <td style="color:var(--muted)">{{ r.date|date:"M d, Y"|default:"-" }}</td>
+        <td class="actions">
+          <a href="/pointtransactions/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/pointtransactions/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No pointtransactions found.</p>
+    <a href="/pointtransactions/create/" class="btn btn-primary" style="margin-top:1rem">Create PointTransaction</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
