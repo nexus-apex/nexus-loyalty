@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Reward | NexusLoyalty{% endblock %}
+{% block page_title %}{% if editing %}Edit Reward{% else %}New Reward{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Points Required</label>
+        <input type="number" name="points_required" value="{{ record.points_required|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Category</label>
+        <select name="category">
+          <option value="discount" {% if record.category == 'discount' %}selected{% endif %}>Discount</option>
+          <option value="freebie" {% if record.category == 'freebie' %}selected{% endif %}>Freebie</option>
+          <option value="cashback" {% if record.category == 'cashback' %}selected{% endif %}>Cashback</option>
+          <option value="experience" {% if record.category == 'experience' %}selected{% endif %}>Experience</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Stock</label>
+        <input type="number" name="stock" value="{{ record.stock|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="out_of_stock" {% if record.status == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+          <option value="expired" {% if record.status == 'expired' %}selected{% endif %}>Expired</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Redeemed Count</label>
+        <input type="number" name="redeemed_count" value="{{ record.redeemed_count|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description">{{ record.description|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Reward</button>
+      <a href="/rewards/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
